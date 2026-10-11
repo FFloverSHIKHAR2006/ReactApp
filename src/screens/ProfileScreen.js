@@ -14,6 +14,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Modal,
 } from 'react-native';
 import Colors from '../constants/colors';
 import { LogoMark, BackIcon, ProfileIcon, CheckboxIcon } from '../components/Icons';
@@ -102,19 +103,17 @@ export default function ProfileScreen({ navigation }) {
     setTimeout(() => setFeedback(''), 3000);
   };
 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const performLogout = async () => {
+    setShowLogoutModal(false);
+    await clearProfile();
+    await clearOnboarding();
+    navigation.reset({ index: 0, routes: [{ name: 'Onboarding' }] });
+  };
+
   const handleLogout = () => {
-    Alert.alert('Log out', 'Are you sure you want to log out?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Log out',
-        style: 'destructive',
-        onPress: async () => {
-          await clearProfile();
-          await clearOnboarding();
-          navigation.reset({ index: 0, routes: [{ name: 'Onboarding' }] });
-        },
-      },
-    ]);
+    setShowLogoutModal(true);
   };
 
   const initials = (
@@ -277,6 +276,39 @@ export default function ProfileScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Logout Confirmation Modal */}
+      <Modal
+        visible={showLogoutModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowLogoutModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Log out</Text>
+            <Text style={styles.modalMessage}>
+              Are you sure you want to log out? This will reset your profile and return to the onboarding screen.
+            </Text>
+            <View style={styles.modalActionRow}>
+              <TouchableOpacity
+                style={styles.modalCancelBtn}
+                onPress={() => setShowLogoutModal(false)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.modalCancelBtnText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalConfirmBtn}
+                onPress={performLogout}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.modalConfirmBtnText}>Log out</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 }
@@ -429,4 +461,72 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   saveBtnText: { fontSize: 14, fontWeight: '700', color: Colors.white },
+
+  /* Modal */
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(48, 37, 31, 0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  modalCard: {
+    width: '100%',
+    maxWidth: 380,
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: Colors.primaryText,
+    marginBottom: 8,
+  },
+  modalMessage: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: Colors.secondaryText,
+    marginBottom: 22,
+  },
+  modalActionRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  modalCancelBtn: {
+    flex: 1,
+    height: 46,
+    borderRadius: 8,
+    borderWidth: 1.5,
+    borderColor: Colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.white,
+  },
+  modalCancelBtnText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: Colors.secondaryText,
+  },
+  modalConfirmBtn: {
+    flex: 1,
+    height: 46,
+    borderRadius: 8,
+    backgroundColor: Colors.ctaCoral,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalConfirmBtnText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: Colors.white,
+  },
 });
+

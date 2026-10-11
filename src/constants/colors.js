@@ -5,7 +5,7 @@
 const Colors = {
   primaryOrange: '#FC8019',
   altOrange: '#FF8000',
-  ctaCoral: '#F63440',
+  ctaCoral: '#FC8019',
   backgroundCream: '#FDF6ED',
   white: '#FFFFFF',
   primaryText: '#30251F',

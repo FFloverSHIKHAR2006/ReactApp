@@ -67,6 +67,8 @@ export default function App() {
     return () => subscription.remove();
   }, [history]);
 
+  const [sessionKey, setSessionKey] = useState(0);
+
   // Standard navigation object passed to all screens
   const navigation = useMemo(
     () => ({
@@ -86,6 +88,7 @@ export default function App() {
         const target = routes?.[0]?.name || 'Home';
         setHistory([target]);
         setCurrentScreen(target);
+        setSessionKey((k) => k + 1);
       },
     }),
     []
@@ -104,11 +107,13 @@ export default function App() {
       <StatusBar barStyle="dark-content" backgroundColor={Colors.white} />
       <View style={styles.screenWrapper}>
         {currentScreen === 'Onboarding' && (
-          <OnboardingScreen navigation={navigation} />
+          <OnboardingScreen key={`onboarding-${sessionKey}`} navigation={navigation} />
         )}
-        {currentScreen === 'Home' && <HomeScreen navigation={navigation} />}
+        {currentScreen === 'Home' && (
+          <HomeScreen key={`home-${sessionKey}`} navigation={navigation} />
+        )}
         {currentScreen === 'Profile' && (
-          <ProfileScreen navigation={navigation} />
+          <ProfileScreen key={`profile-${sessionKey}`} navigation={navigation} />
         )}
       </View>
     </SafeAreaView>
