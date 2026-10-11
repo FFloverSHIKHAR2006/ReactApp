@@ -228,7 +228,7 @@ git commit -m "feat: complete Ananth Aahara Indian food ordering app with onboar
 git branch -M main
 
 # Link your GitHub remote (if not already connected)
-git remote add origin https://github.com/<your-username>/<your-repo-name>.git
+git remote add origin https://github.com/FFLoverSHIKHAR2006/ReactApp.git
 
 # Push changes to GitHub
 git push -u origin main
